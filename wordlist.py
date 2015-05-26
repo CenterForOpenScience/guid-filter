@@ -93,6 +93,3 @@ wordlist.add_file('dictionaries/12dicts-5.0/neol2007.txt', split_further=',')
 for filename in ['french.txt', 'german.txt', 'italian.txt', 'japanese.txt', 'spanish.txt']:
     fn = os.path.join('dictionaries/mlang', filename)
     wordlist.add_file(fn)
-
-for word in wordlist.words:
-    wordlist.add_words(vowel_expand(word, MAX_SIZE))
