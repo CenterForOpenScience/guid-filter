@@ -1,12 +1,16 @@
 from collections import defaultdict
 import unicodedata
+from transformations import vowel_expand, drop_vowel, l33t, words_with_ck, double_to_single
 # import unidecode
 
 import re
 import os
+import itertools
 
+ALPHABET = '23456789abcdefghijkmnpqrstuvwxyz'
 allwords = {}
 table = []
+
 
 class WordList(object):
     def __init__(self, lower=False, strip_nonalpha=False):
@@ -54,6 +58,15 @@ class WordList(object):
             out[len(word)].add(word)
         return out
 
+
+def put(word, guid, i):
+    return guid[0:i] + word + guid[len(word) + i:]
+
+
+def n_positions(word, n):
+    return n - len(word) + 1
+
+
 wordlist = WordList(lower=True, strip_nonalpha=True)
 
 # https://github.com/shutterstock/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words
@@ -76,3 +89,27 @@ wordlist.add('dictionaries/12dicts-5.0/neol2007.txt', split_further=',')
 for filename in ['french.txt', 'german.txt', 'italian.txt', 'japanese.txt', 'spanish.txt']:
     fn = os.path.join('dictionaries/mlang', filename)
     wordlist.add(fn)
+
+
+# Generate combinations from words in wordlist
+result = []
+for word in wordlist.words:
+    result += vowel_expand(word, 3)
+    result += double_to_single(word)
+    result += drop_vowel(word)
+    result += words_with_ck(word)
+    result += l33t(word)
+
+# Generate guid combinations from expanded blacklist
+blacklist = wordlist.words.union(result)
+all_combinations = itertools.combinations_with_replacement(ALPHABET, 5)
+blacklist_guids = []
+
+for word in blacklist:
+    for guid in list(all_combinations):
+        guid = ''.join(guid)
+        for i in range(0, n_positions(word, 5)):
+            blacklist_guid = put(word, guid, i)
+            blacklist_guids.append(blacklist_guid)
+
+print len(blacklist_guids)
