@@ -55,3 +55,24 @@ class WordList(object):
         return out
 
 wordlist = WordList(lower=True, strip_nonalpha=True)
+
+# https://github.com/shutterstock/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words
+# https://github.com/shutterstock/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words/archive/master.zip
+
+for filename in ['de', 'en', 'es', 'fr', 'it', 'nl', 'pt', 'ru']: # 'ja', 'zh'
+    fn = os.path.join('dictionaries/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words-master', filename)
+    wordlist.add(fn)
+
+# http://wordlist.sourceforge.net/12dicts-readme-r5.html
+# http://downloads.sourceforge.net/project/wordlist/12Dicts/5.0/12dicts-5.0.zip
+for filename in ['2of12inf.txt', '5desk.txt', '2of4brif.txt', '2of12.txt', '6of12.txt', '3esl.txt']:
+    fn = os.path.join('dictionaries/12dicts-5.0', filename)
+    wordlist.add(fn)
+
+wordlist.add('dictionaries/12dicts-5.0/neol2007.txt', split_further=',')
+
+# http://icon.shef.ac.uk/Moby/mlang.html
+# http://www.dcs.shef.ac.uk/research/ilash/Moby/mlang.tar.Z
+for filename in ['french.txt', 'german.txt', 'italian.txt', 'japanese.txt', 'spanish.txt']:
+    fn = os.path.join('dictionaries/mlang', filename)
+    wordlist.add(fn)
