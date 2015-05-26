@@ -1,14 +1,8 @@
-from transformations import vowel_expand, drop_vowel, l33t, words_with_ck, double_to_single
-
 from collections import defaultdict
 import itertools
 import os
 import re
 import unicodedata
-
-ALPHABET = '23456789abcdefghijkmnpqrstuvwxyz'
-MAX_SIZE = 5
-MIN_SIZE = 3
 
 class WordList(object):
     def __init__(self, lower=False, strip_nonalpha=False):
@@ -19,11 +13,17 @@ class WordList(object):
         self.sets = defaultdict
 
     def add_words(self, words):
+        count_added = 0
         for word in words:
-            self.words.add(word0)
+            count_added += self._add_word(word)
+        print('Words added: {0}, Total: {1}'.format(count_added, len(self.words)))
+        return count_added
 
-    def add_word(self, word):
-        self.words.add(word)
+    def _add_word(self, word):
+        if word not in self.words:
+            self.words.add(word)
+            return 1
+        return 0
 
     def add_file(self, filename, split_further=None):
         count_total = 0
@@ -44,10 +44,9 @@ class WordList(object):
                         word = unicodedata.normalize('NFKD', word).encode('ascii','ignore').decode("utf-8")
                         if self._strip_nonalpha:
                             word = re.sub('[^a-zA-Z]', '', word)
-                        if word not in self.words:
-                            self.add_word(word)
-                            count_added += 1
-                        count_total += 1
+                        number_words_added = self._add_word(word)
+                        count_added += number_words_added
+                        count_total += number_words_added
             except:
                 print('Error')
         print('Words added: {0}, Total: {1}'.format(count_added, len(self.words)))

@@ -84,7 +84,7 @@ def double_to_single(word):
         for idx, value in enumerate(item):
             if value == 1:
                 word_list[found_indices[idx]] = ''
-                print idx
+                print(idx)
         result.append(''.join(word_list))
     return result
 
