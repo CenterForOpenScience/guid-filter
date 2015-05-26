@@ -1,12 +1,13 @@
+from transformations import vowel_expand
+
 from collections import defaultdict
-import unicodedata
-# import unidecode
-
-import re
 import os
+import re
+import unicodedata
 
-allwords = {}
-table = []
+ALPHABET = []
+MAX_SIZE = 5
+MIN_SIZE = 3
 
 class WordList(object):
     def __init__(self, lower=False, strip_nonalpha=False):
@@ -16,10 +17,17 @@ class WordList(object):
         self._table = []
         self.sets = defaultdict
 
-    def add(self, fn, split_further=None):
+    def add_words(self, words):
+        for word in words:
+            self.words.add(word0)
+
+    def add_word(self, word):
+        self.words.add(word)
+
+    def add_file(self, filename, split_further=None):
         count_total = 0
         count_added = 0
-        with open(fn, 'U', encoding='iso-8859-15') as f: # can also try cp437 (so:16528468)
+        with open(filename, 'U', encoding='iso-8859-15') as f: # can also try cp437 (so:16528468)
             try:
                 for row in f:
                     if split_further is None:
@@ -35,19 +43,18 @@ class WordList(object):
                         word = unicodedata.normalize('NFKD', word).encode('ascii','ignore').decode("utf-8")
                         if self._strip_nonalpha:
                             word = re.sub('[^a-zA-Z]', '', word)
-                        self.sets
                         if word not in self.words:
-                            self.words.add(word)
+                            self.add_word(word)
                             count_added += 1
                         count_total += 1
             except:
                 print('Error')
         print('Words added: {0}, Total: {1}'.format(count_added, len(self.words)))
         self._table.append({
-            'filename':fn, 
+            'filename':filename,
             'words_in_file':count_total
         })
-    
+
     def dict_by_length(self):
         out = defaultdict(set)
         for word in self.words:
@@ -61,18 +68,21 @@ wordlist = WordList(lower=True, strip_nonalpha=True)
 
 for filename in ['de', 'en', 'es', 'fr', 'it', 'nl', 'pt', 'ru']: # 'ja', 'zh'
     fn = os.path.join('dictionaries/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words-master', filename)
-    wordlist.add(fn)
+    wordlist.add_file(fn)
 
 # http://wordlist.sourceforge.net/12dicts-readme-r5.html
 # http://downloads.sourceforge.net/project/wordlist/12Dicts/5.0/12dicts-5.0.zip
 for filename in ['2of12inf.txt', '5desk.txt', '2of4brif.txt', '2of12.txt', '6of12.txt', '3esl.txt']:
     fn = os.path.join('dictionaries/12dicts-5.0', filename)
-    wordlist.add(fn)
+    wordlist.add_file(fn)
 
-wordlist.add('dictionaries/12dicts-5.0/neol2007.txt', split_further=',')
+wordlist.add_file('dictionaries/12dicts-5.0/neol2007.txt', split_further=',')
 
 # http://icon.shef.ac.uk/Moby/mlang.html
 # http://www.dcs.shef.ac.uk/research/ilash/Moby/mlang.tar.Z
 for filename in ['french.txt', 'german.txt', 'italian.txt', 'japanese.txt', 'spanish.txt']:
     fn = os.path.join('dictionaries/mlang', filename)
-    wordlist.add(fn)
+    wordlist.add_file(fn)
+
+for word in wordlist.words:
+    wordlist.add_words(vowel_expand(word, MAX_SIZE))

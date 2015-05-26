@@ -1,6 +1,7 @@
 import itertools
 import re
 
+
 def vowel_expand(word, max_size, vowels=['a','e','i','o','u']):
     results = []
     found_list = list(re.finditer('['+''.join(vowels)+']', word))
