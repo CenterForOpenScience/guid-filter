@@ -19,6 +19,7 @@ def generate_blacklist(blacklist):
     total = len(blacklist)
     for word in blacklist:
         print('Processing word {0}/{1}'.format(n, total))
+        n += 1
         result += vowel_expand(word, 3)
         result += drop_vowel(word)
         result += words_with_ck(word)
