@@ -1,5 +1,3 @@
-from transformations import vowel_expand, drop_vowel, l33t, words_with_ck, double_to_single
-
 from collections import defaultdict
 import itertools
 import os
@@ -9,6 +7,7 @@ import unicodedata
 ALPHABET = '23456789abcdefghijkmnpqrstuvwxyz'
 MAX_SIZE = 5
 MIN_SIZE = 3
+
 
 class WordList(object):
     def __init__(self, lower=False, strip_nonalpha=False):
@@ -20,7 +19,7 @@ class WordList(object):
 
     def add_words(self, words):
         for word in words:
-            self.words.add(word0)
+            self.words.add(word)
 
     def add_word(self, word):
         self.words.add(word)
@@ -44,7 +43,7 @@ class WordList(object):
                         word = unicodedata.normalize('NFKD', word).encode('ascii','ignore').decode("utf-8")
                         if self._strip_nonalpha:
                             word = re.sub('[^a-zA-Z]', '', word)
-                        if word not in self.words:
+                        if word not in self.words and 2 < len(word) <= 5:
                             self.add_word(word)
                             count_added += 1
                         count_total += 1
@@ -61,14 +60,6 @@ class WordList(object):
         for word in self.words:
             out[len(word)].add(word)
         return out
-
-
-def put(word, guid, i):
-    return guid[0:i] + word + guid[len(word) + i:]
-
-
-def n_positions(word, n):
-    return n - len(word) + 1
 
 
 wordlist = WordList(lower=True, strip_nonalpha=True)
