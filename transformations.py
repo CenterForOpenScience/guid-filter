@@ -11,11 +11,12 @@ def vowel_expand(word, max_size, vowels=['a','e','i','o','u']):
                 if do_process:
                     position = found_list[i].span()[0]
                     character = found_list[i].group()
-                    word_list = list(word)
                     repeat_number = max_size-len(word)
-                    word_list.insert(position, character*repeat_number)
-                    result = ''.join(word_list)
-                    results.append(result)
+                    for n in range(0, (repeat_number + 1)):
+                        word_list = list(word)
+                        word_list.insert(position, character*n)
+                        result = ''.join(word_list)
+                        results.append(result)
     return results
 
 

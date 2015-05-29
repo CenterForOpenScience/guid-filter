@@ -4,6 +4,20 @@ from transformations import drop_vowel, words_with_ck, repeat_to_single, vowel_e
 
 class MyTestCase(unittest.TestCase):
 
+    def test_multiple_vowel_expand(self):
+        bad_words = vowel_expand('bada', max_size=5)
+        self.assertIn('bada', bad_words)
+        self.assertIn('badaa', bad_words)
+        self.assertIn('baada', bad_words)
+
+    def test_vowel_expand(self):
+        bad_words = vowel_expand('bad', max_size=5)
+        expected = ['bad', 'baad', 'baaad']
+        self.assertIn('bad', bad_words)
+        self.assertIn('baad', bad_words)
+        self.assertIn('baaad', bad_words)
+        self.assertEquals(bad_words, expected)
+
     def test_drop_one_vowel(self):
         bad_words = drop_vowel('duck')
         expected = ['duck', 'dck']
