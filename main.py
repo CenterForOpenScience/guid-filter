@@ -68,7 +68,7 @@ def process_guids(data, n=4):
     p = pool.Pool(processes=n)
     c = get_combinations(2)
     map_func = partial(generate_guids, combinations=c)
-    results = p.map(generate_guids, data)
+    results = p.map(map_func, data)
     p.close()
 
     total = set()
