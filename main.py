@@ -24,7 +24,7 @@ def generate_blacklist(blacklist, min_length, max_length):
             result += words_with_ck(word)
             result += l33t(word)
         result += drop_vowel(word)
-        result += double_to_single(word)
+        result += repeat_to_single(word)
     return result
 
 
