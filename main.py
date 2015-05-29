@@ -46,7 +46,7 @@ def generate_guids(words, combinations=None, length=5, alphabet=ALPHABET):
 
     for word in words:
         if len(word) == length:
-            guids.add(words)
+            guids.add(word)
         else:
             positions = n_positions(word, length)
             n_random = length - len(word)
