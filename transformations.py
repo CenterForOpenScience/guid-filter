@@ -68,23 +68,32 @@ def words_with_ck(word):
     return result
 
 
-def double_to_single(word):
-    result = []
+def repeat_to_single(word):
     word_list = list(word)
-    found_indices = []
+    repeats = []
+    result = []
     for letter in word_list:
-        if word_list.count(letter) > 1:
-            index = word_list.index(letter)
-            if letter == word_list[index + 1] and index not in found_indices:
-                found_indices.append(index)
+        if word_list.count(letter) > 1 and letter not in repeats:
+            repeats.append(letter)
+    found_indices = []
+    for letter in repeats:
+        repeat_indices = []
+        for l in range(0, len(word_list)):
+            if word_list[l] == letter:
+                repeat_indices.append(l)
+        found_indices.append(repeat_indices)
 
     positions = list(itertools.product(range(0, 2), repeat=len(found_indices)))
     for item in positions:
         word_list = list(word)
         for idx, value in enumerate(item):
             if value == 1:
-                word_list[found_indices[idx]] = ''
-        result.append(''.join(word_list))
+                repeat_set = found_indices[idx]
+                for r in repeat_set[1:]:
+                    word_list[r] = ''
+                    result.append(''.join(word_list))
+            else:
+                result.append(''.join(word_list))
     return result
 
 

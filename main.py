@@ -1,4 +1,4 @@
-from transformations import vowel_expand, drop_vowel, l33t, words_with_ck, double_to_single
+from transformations import vowel_expand, drop_vowel, l33t, words_with_ck, repeat_to_single
 from process import wordlist
 import itertools
 ALPHABET = '23456789abcdefghijkmnpqrstuvwxyz'
