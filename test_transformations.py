@@ -1,8 +1,8 @@
 import unittest
-from transformations import drop_vowel, words_with_ck, repeat_to_single, vowel_expand, get_matched_letters_indices, l33t
+from transformations import drop_vowel, words_with_ck, repeat_to_single, vowel_expand, get_matched_letters_indices, l33t, drop_suffixes
 
 
-class MyTestCase(unittest.TestCase):
+class TestTransformations(unittest.TestCase):
 
     def test_multiple_vowel_expand(self):
         bad_words = vowel_expand('bada', max_size=5)
@@ -35,7 +35,7 @@ class MyTestCase(unittest.TestCase):
     
     def test_words_with_ck(self):
         bad_words = words_with_ck('duck')
-        expected = ['duck', 'duc', 'ducc', 'duk', 'dukk']
+        expected = ['duck', 'duc', 'ducc', 'duk', 'dukk', 'dux', 'duxx']
         self.assertEquals(expected, bad_words)
     
     def test_l33t(self):
@@ -66,6 +66,27 @@ class MyTestCase(unittest.TestCase):
         self.assertIn('hhff', bad_words)
         self.assertIn('hff', bad_words)
         self.assertIn('hhf', bad_words)
+
+    def test_drop_suffixes(self):
+        # ed
+        bad_words = drop_suffixes('called')
+        self.assertEqual(bad_words, ['call'])
+
+        # es
+        bad_words = drop_suffixes('foxes')
+        self.assertEqual(bad_words, ['fox', 'foxe'])
+
+        # s
+        bad_words = drop_suffixes('cats')
+        self.assertEqual(bad_words, ['cat'])
+
+        # y
+        bad_words = drop_suffixes('trexy')
+        self.assertEqual(bad_words, ['trex'])
+
+        # ing
+        bad_words = drop_suffixes('testing')
+        self.assertEqual(bad_words, ['test'])
 
 
 if __name__ == '__main__':

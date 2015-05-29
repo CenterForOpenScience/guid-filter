@@ -62,7 +62,7 @@ def words_with_ck(word):
     result = []
     if 'ck' in word:
         result.append(word)
-        substitutions = ['c', 'cc', 'k', 'kk']
+        substitutions = ['c', 'cc', 'k', 'kk', 'x', 'xx']
         for s in substitutions:
             new_word = word.replace('ck', s)
             result.append(new_word)
@@ -104,3 +104,12 @@ def get_matched_letters_indices(word, letters):
         match = (found.span()[0], found.group())
         found_list.append(match)
     return found_list
+
+
+def drop_suffixes(word):
+    result = []
+    suffixes = ['ed', 'es', 's', 'y', 'ing']
+    for s in suffixes:
+        if word.endswith(s):
+            result.append(word[0:len(word)-len(s)])
+    return result

@@ -1,4 +1,4 @@
-from transformations import vowel_expand, drop_vowel, l33t, words_with_ck, repeat_to_single
+from transformations import vowel_expand, drop_vowel, l33t, words_with_ck, repeat_to_single, drop_suffixes
 from wordlist import WordList
 import itertools
 import os
@@ -25,7 +25,8 @@ for filename in ['de', 'en', 'es', 'fr', 'it', 'nl', 'pt', 'ru', 'custom.txt']: 
         lambda x: drop_vowel(x),
         lambda x: l33t(x) if 3 <= len(x) <= 5 else [],
         lambda x: words_with_ck(x),
-        lambda x: repeat_to_single(x)
+        lambda x: repeat_to_single(x),
+        lambda x: drop_suffixes(x)
     ])
 
 # http://wordlist.sourceforge.net/12dicts-readme-r5.html
