@@ -1,31 +1,20 @@
-from transformations import vowel_expand, drop_vowel, l33t, words_with_ck, repeat_to_single
 from process import wordlist
 import itertools
-ALPHABET = '23456789abcdefghijkmnpqrstuvwxyz'
-BLACKLIST = wordlist.words
+import time
+import os
+ALPHABET = '23456789abcdefghjkmnpqrstuvwxyz'
 
 
 def main():
-    blacklist = set(generate_blacklist(BLACKLIST, min_length=2, max_length=5))
+    blacklist_all = wordlist.dict_by_length()
+    blacklist = blacklist_all[3].union(blacklist_all[4]).union(blacklist_all[5])
     combinations = get_combinations(2)
-    bad_guids = generate_guids(blacklist, combinations=combinations, length=5)
-
-
-def generate_blacklist(blacklist, min_length, max_length):
-    result = [w for w in blacklist if min_length < len(w) <= max_length]
-    print('Generating blacklist...')
-    n = 1
-    total = len(blacklist)
-    for word in blacklist:
-        print('Processing word {0}/{1}'.format(n, total))
-        n += 1
-        if len(word) <= max_length:
-            result += vowel_expand(word, 3)
-            result += words_with_ck(word)
-            result += l33t(word)
-        result += drop_vowel(word)
-        result += repeat_to_single(word)
-    return result
+    tick = time.time()
+    bad_guids = generate_guids(blacklist, combinations=combinations)
+    print('Time: {}, Length: {}'.format(time.time()-tick, len(bad_guids)))
+    with open('guid_blacklist.txt', 'w') as writer:
+        for item in bad_guids:
+            writer.write(item + os.linesep)
 
 
 def get_combinations(length, alphabet=ALPHABET):
@@ -41,10 +30,12 @@ def generate_guids(words, combinations=None, length=5, alphabet=ALPHABET):
     if not combinations:
         combinations = get_combinations(2, alphabet)
 
-    if not isinstance(words, list):
-        words = [words]
-
+    n = 0
     for word in words:
+        if n % 1000 == 0:
+            print(str(n))
+        if len(word) > length:
+            raise Exception
         if len(word) == length:
             guids.add(word)
         else:
@@ -58,9 +49,8 @@ def generate_guids(words, combinations=None, length=5, alphabet=ALPHABET):
                         index = available_indices.index(idx)
                         word_list[idx] = c[index]
                     result = ''.join(word_list)
-                    if len(result) > length:
-                        raise Exception
                     guids.add(result)
+        n += 1
     return guids
 
 
