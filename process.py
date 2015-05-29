@@ -17,8 +17,10 @@ def not_in_alphabet(word, alphabet=ALPHABET):
 
 # https://github.com/shutterstock/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words
 # https://github.com/shutterstock/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words/archive/master.zip
+# http://www.noswearing.com/dictionary
+# http://wiki.spiralknights.com/List_of_known_filtered_words
 
-for filename in ['de', 'en', 'es', 'fr', 'it', 'nl', 'pt', 'ru', 'custom.txt']: # 'ja', 'zh'
+for filename in ['de', 'en', 'es', 'fr', 'it', 'nl', 'pt', 'ru', 'custom.txt', 'noswearing.txt', 'sega.txt']: # 'ja', 'zh'
     fn = os.path.join('dictionaries/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words-master', filename)
     wordlist.add_file(fn, min=3, max=15, reject=[not_in_alphabet], transforms=[
         lambda x: vowel_expand(x, 5) if len(x) < 5 else [],
