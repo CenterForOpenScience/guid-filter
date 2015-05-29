@@ -1,24 +1,14 @@
 from transformations import vowel_expand, drop_vowel, l33t, words_with_ck, double_to_single
-from wordlist import wordlist
+from process import wordlist
 import itertools
-from functools import partial
-from multiprocessing import pool
-import csv
-import time
 ALPHABET = '23456789abcdefghijkmnpqrstuvwxyz'
 BLACKLIST = wordlist.words
 
 
 def main():
-    tick = time.time()
     blacklist = set(generate_blacklist(BLACKLIST, min_length=2, max_length=5))
-    print(time.time()-tick)
-    print(len(blacklist))
-
-    tick = time.time()
-    bad_guids = process_guids(list(blacklist))
-    print(time.time()-tick)
-    return bad_guids
+    combinations = get_combinations(2)
+    bad_guids = generate_guids(blacklist, combinations=combinations, length=5)
 
 
 def generate_blacklist(blacklist, min_length, max_length):
@@ -38,56 +28,40 @@ def generate_blacklist(blacklist, min_length, max_length):
     return result
 
 
-def get_combinations(length):
+def get_combinations(length, alphabet=ALPHABET):
     combinations = {}
     for x in range(length):
-        combinations[x + 1] = list(itertools.product(ALPHABET, repeat=(x+1)))
+        combinations[x + 1] = list(itertools.product(alphabet, repeat=(x+1)))
     return combinations
 
 
-def generate_guids(full_blacklist, combinations, min_length, max_length):
-    with open('blacklist.csv', 'w') as blacklist_csv:
-        writer = csv.writer(blacklist_csv)
-        blacklist_guids = set()
+def generate_guids(words, combinations=None, length=5, alphabet=ALPHABET):
+    guids = set()
 
-        if type(full_blacklist) != list:
-            full_blacklist = [full_blacklist]
+    if not combinations:
+        combinations = get_combinations(2, alphabet)
 
-        for word in full_blacklist:
-            if min_length < len(word) < max_length:
-                print(word)
-                positions = n_positions(word, max_length)
-                n_random = max_length - len(word)
-                for c in combinations[n_random]:
-                    for i in range(0, positions):
-                        word_list = create_word_list(word, i)
-                        available_indices = [i for i, x in enumerate(word_list) if not x]
-                        for idx in available_indices:
-                            index = available_indices.index(idx)
-                            word_list[idx] = c[index]
-                        result = ''.join(word_list)
-                        blacklist_guids.add(result)
-                        writer.writerow([result])
-                        print(len(blacklist_guids), result)
-            elif len(word) == max_length:
-                blacklist_guids.add(word)
-                writer.writerow([word])
-                print(len(blacklist_guids), word)
-        return blacklist_guids
+    if not isinstance(words, list):
+        words = [words]
 
-
-def process_guids(data, n=4):
-    p = pool.Pool(processes=n)
-    c = get_combinations(2)
-    map_func = partial(generate_guids, combinations=c)
-    results = p.map(map_func, data)
-    p.close()
-
-    total = set()
-    for r in results:
-        total = total.union(r)
-    print(len(total))
-    return total
+    for word in words:
+        if len(word) == length:
+            guids.add(words)
+        else:
+            positions = n_positions(word, length)
+            n_random = length - len(word)
+            for c in combinations[n_random]:
+                for i in range(0, positions):
+                    word_list = create_word_list(word, i)
+                    available_indices = [i for i, x in enumerate(word_list) if not x]
+                    for idx in available_indices:
+                        index = available_indices.index(idx)
+                        word_list[idx] = c[index]
+                    result = ''.join(word_list)
+                    if len(result) > length:
+                        raise Exception
+                    guids.add(result)
+    return guids
 
 
 def create_word_list(word, index):
@@ -99,8 +73,8 @@ def create_word_list(word, index):
     return word_list
 
 
-def n_positions(word, n):
-    return n - len(word) + 1
+def n_positions(word, length):
+    return length - len(word) + 1
 
 
 if __name__ == '__main__':
