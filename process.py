@@ -20,7 +20,7 @@ def not_in_alphabet(word, alphabet=ALPHABET):
 
 for filename in ['de', 'en', 'es', 'fr', 'it', 'nl', 'pt', 'ru', 'custom.txt']: # 'ja', 'zh'
     fn = os.path.join('dictionaries/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words-master', filename)
-    wordlist.add_file(fn, min=3, max=10, reject=[not_in_alphabet], transforms=[
+    wordlist.add_file(fn, min=3, max=15, reject=[not_in_alphabet], transforms=[
         lambda x: vowel_expand(x, 5) if len(x) < 5 else [],
         lambda x: drop_vowel(x),
         lambda x: l33t(x) if 3 <= len(x) <= 5 else [],
