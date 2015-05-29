@@ -57,7 +57,7 @@ class WordList(object):
     def words(self):
         return self._words
 
-    def add_file(self, filename, split_further=None, min=None, max=None, transforms=[]):
+    def add_file(self, filename, split_further=None, min=None, max=None, reject=[], transforms=[]):
         count_possible = 0
         count_transformed = 0
         count_added = 0
@@ -73,14 +73,24 @@ class WordList(object):
                     word = word.strip('\n').strip('\r')
                     if self._lower:
                         word = word.lower()
+
                     word = unicodedata.normalize('NFKD', word).encode('ascii','ignore').decode("utf-8")
+
                     if self._strip_nonalpha:
                         word = re.sub('[^a-zA-Z]', '', word)
+
+                    do_continue = True
+                    for fn in reject:
+                        if fn(word):
+                            do_continue = False
+
+                    if not do_continue:
+                        break
 
                     number_words_transformed = 0
                     number_words_added = self._add_word(word, min=min, max=max)
                     if transforms and number_words_added > 0:
-                        number_words_transformed = self._transform(word, transforms)
+                        number_words_transformed = self._transform(word, transforms, min=min, max=max)
 
                     count_possible += 1
                     count_transformed += number_words_transformed
