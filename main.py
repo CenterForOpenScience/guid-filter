@@ -2,16 +2,20 @@ from process import wordlist
 import itertools
 import time
 import os
+import re
 ALPHABET = '23456789abcdefghjkmnpqrstuvwxyz'
 
 
 def main():
     blacklist_all = wordlist.dict_by_length()
     blacklist = blacklist_all[3].union(blacklist_all[4]).union(blacklist_all[5])
-    combinations = get_combinations(2)
+    combinations = get_combinations(3)
     tick = time.time()
     bad_guids = generate_guids(blacklist, combinations=combinations)
     print('Time: {}, Length: {}'.format(time.time()-tick, len(bad_guids)))
+
+    bad_guids.union(generate_69s(combinations))
+
     with open('guid_blacklist.txt', 'w') as writer:
         for item in bad_guids:
             writer.write(item + os.linesep)
@@ -52,6 +56,19 @@ def generate_guids(words, combinations=None, length=5, alphabet=ALPHABET):
                     guids.add(result)
         n += 1
     return guids
+
+
+def generate_69s(combinations):
+    found = []
+    guids_with_69 = generate_guids(['69'], combinations=combinations)
+
+    for word in guids_with_69:
+        if re.search('[a-z]69[a-z]', word) or \
+            re.search('^69[a-z]', word) or \
+            re.search('[a-z]69$', word):
+            found.append(word)
+
+    return found
 
 
 def create_word_list(word, index):
